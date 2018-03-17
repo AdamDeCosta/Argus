@@ -18,6 +18,5 @@ async def get_auth(client):
                                      headers=headers)
     resp = await r.text()
     resp = json.loads(resp)
-    print(resp)
     token = resp['access_token']
     return token
