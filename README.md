@@ -1,0 +1,2 @@
+# Argus
+A discord bot
