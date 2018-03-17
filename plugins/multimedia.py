@@ -1,18 +1,17 @@
-import discord
 from discord.ext import commands
-from lib.load import load_plugin_cfg
-from lib.spotify import get_auth
+from lib.base.config import Config
+from lib.multimedia.spotify import *
 import aiohttp
 import json
 
 
-class Multimedia:
+class Multimedia(Config):
     def __init__(self, client):
+        super().__init__()
         self.client = client
         self.session = aiohttp.ClientSession()
 
     async def on_ready(self):
-        self.settings = load_plugin_cfg(self)
 
         self.yt_key = self.settings['youtube-key']
         self.sp_key = self.settings['spotify-secret']
@@ -23,8 +22,8 @@ class Multimedia:
                           'accept': 'application/json',
                           'Authorization': 'Bearer {0}'.format(sp_token)}
 
-    @commands.command(name="yt")
-    async def youtube(self, *args):
+    @commands.command(name="yt", pass_context = True)
+    async def youtube(self, ctx, *args):
         """
         Searches youtube for a video matching inputted string
         :parameter args: string to input
@@ -42,12 +41,17 @@ class Multimedia:
                                        params=payload)
         resp = await r.text()
         resp = json.loads(resp)
-        result = resp['items'][0]
-        url = 'https://youtu.be/{0}'.format(result['id']['videoId'])
-        await self.client.say(url)
+        try:
+            result = resp['items'][0]
+        except IndexError:
+            mention = ctx.message.author.mention
+            await self.client.say("{}: No results found".format(mention))
+        else:
+            url = 'https://youtu.be/{0}'.format(result['id']['videoId'])
+            await self.client.say(url)
 
-    @commands.command(name='sp')
-    async def spotify(self, *args):
+    @commands.command(name='sp', pass_context=True)
+    async def spotify(self,ctx, *args):
         """
         Get track or artist from spotify search
         :param args: string to search
@@ -63,11 +67,15 @@ class Multimedia:
                                        params=payload)
         resp = await r.text()
         resp = json.loads(resp)
-        print(resp)
         if len(resp['artists']['items']) > 0:
             result = resp['artists']['items'][0]['external_urls']['spotify']
         else:
-            result = resp['tracks']['items'][0]['external_urls']['spotify']
+            try:
+                result = resp['tracks']['items'][0]['external_urls']['spotify']
+            except IndexError:
+                mention = ctx.message.author.mention
+                result = "{} No results found".format(mention)
+
         await self.client.say(result)
 
 

@@ -1,6 +1,5 @@
-import discord
 from discord.ext import commands
-from lib.load import load
+from lib.base.load import load
 
 _cfg = 'config.json'
 _settings = load(_cfg)
