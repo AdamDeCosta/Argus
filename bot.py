@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 from lib.load import load
 
-import sys, traceback
-
 _cfg = 'config.json'
 _settings = load(_cfg)
 _plugins = _settings['plugins']
@@ -25,9 +23,8 @@ def main():
     for plugin in _plugins:
         try:
             client.load_extension(plugin)
-        except Exception as e:
-            print(f'Failed to load extension {plugin}.', file=sys.stderr)
-            traceback.print_exc()
+        except Exception:
+            print("Failed to load extension: {}".format(plugin))
 
     client.run(token)
 
