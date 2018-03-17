@@ -1,0 +1,9 @@
+{
+  "token": "BOT-TOKEN",
+  "plugins": [
+    "plugins.test",
+    "plugins.inspire",
+    "plugins.multimedia",
+    "plugins.dice"
+  ]
+}
