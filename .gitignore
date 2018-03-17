@@ -101,5 +101,8 @@ ENV/
 
 #idea
 .idea/
+
+#config files
 config/
+config/*.json
 config.json
