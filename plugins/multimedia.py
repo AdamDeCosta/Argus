@@ -12,7 +12,6 @@ class Multimedia(Config):
         self.session = aiohttp.ClientSession()
 
     async def on_ready(self):
-
         self.yt_key = self.settings['youtube-key']
         self.sp_key = self.settings['spotify-secret']
 

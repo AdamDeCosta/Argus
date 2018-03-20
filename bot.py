@@ -22,8 +22,9 @@ def main():
     for plugin in _plugins:
         try:
             client.load_extension(plugin)
-        except Exception:
+        except Exception as e:
             print("Failed to load extension: {}".format(plugin))
+            print(e)
 
     client.run(token)
 
